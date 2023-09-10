@@ -1,0 +1,407 @@
+/* --- Type creation and casts  --- */
+select 'gsdfgf'::jqprog;
+ jqprog 
+--------
+ gsdfgf
+(1 row)
+
+select 1345::jqprog;
+ERROR:  cannot cast type integer to jqprog
+LINE 1: select 1345::jqprog;
+                   ^
+ /* --- Arrays as input  --- */
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].bar');
+  jq   
+-------
+ "baz"
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].balance');
+  jq  
+------
+ 7.77
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "balance_int": 7, "active":false}]'::jsonb, '.[0].balance_int');
+ jq 
+----
+ 7
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].active');
+  jq   
+-------
+ false
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false, "keno": null}]'::jsonb, '.[0].keno');
+  jq  
+------
+ null
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false, "keno": null}]'::jsonb, '.[0].keno');
+  jq  
+------
+ null
+(1 row)
+
+select jq('[["a", "b", "c"]]'::jsonb, '.[0]');
+       jq        
+-----------------
+ ["a", "b", "c"]
+(1 row)
+
+select jq('[["a", "b", "c"]]'::jsonb, '.[0].[0]');
+ jq  
+-----
+ "a"
+(1 row)
+
+select jq('[["a", "b", "c"]]'::jsonb, '.[0].[1]');
+ jq  
+-----
+ "b"
+(1 row)
+
+select jq('[["a", "b", "c"]]'::jsonb, '.[0].[1000]');
+  jq  
+------
+ null
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0]');
+                        jq                        
+--------------------------------------------------
+ {"bar": "baz", "active": false, "balance": 7.77}
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[100]');
+  jq  
+------
+ null
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].bar');
+  jq   
+-------
+ "baz"
+(1 row)
+
+select jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].gdfgdf');
+  jq  
+------
+ null
+(1 row)
+
+/* --- Single object as input --- */
+select jq('{"bar": "baz", "balance": 7.77, "active":false}'::jsonb, '.');
+                        jq                        
+--------------------------------------------------
+ {"bar": "baz", "active": false, "balance": 7.77}
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false}'::jsonb, '.baz');
+  jq  
+------
+ null
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false}'::jsonb, '.balance');
+  jq  
+------
+ 7.77
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false}'::jsonb, '.gdfgfd');
+  jq  
+------
+ null
+(1 row)
+
+select jq('{"user":"stedolan", "projects": ["jq", "wikiflow"]}', '.user, .projects[]');
+     jq     
+------------
+ "wikiflow"
+(1 row)
+
+/* --- Nested object --- */
+select jq('{"bar": "baz", "balance": 7.77, "active":false, "inner": {"key": "value"}}'::jsonb, '.gdfgfd');
+  jq  
+------
+ null
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false, "inner": {"key": "value"}}'::jsonb, '.inner');
+        jq        
+------------------
+ {"key": "value"}
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false, "inner": {"key": "value"}}'::jsonb, '.inner.key');
+   jq    
+---------
+ "value"
+(1 row)
+
+select jq('{"bar": "baz", "balance": 7.77, "active":false, "inner": {"key": "value"}}'::jsonb, '.gdfgfd');
+  jq  
+------
+ null
+(1 row)
+
+/* --- pick --- */
+select jq('{"a": [123]}', '.a[]');
+ jq  
+-----
+ 123
+(1 row)
+
+/* --- assignment --- */
+select jq('[true,false,[5,true,[true,[false]],false]]', '(..|select(type=="boolean")) |= if . then 1 else 0 end');
+             jq              
+-----------------------------
+ [1, 0, [5, 1, [1, [0]], 0]]
+(1 row)
+
+select jq('{"foo": 42}', '.foo += 1');
+     jq      
+-------------
+ {"foo": 43}
+(1 row)
+
+select jq('{"a": {"b": 10}, "b": 20}', '.a = .b');
+         jq         
+--------------------
+ {"a": 20, "b": 20}
+(1 row)
+
+/* --- select --- */
+select jq('[1,5,3,0,7]' , '(.[] | select(. >= 2)) |= empty');
+   jq   
+--------
+ [1, 0]
+(1 row)
+
+select jq('[1,5,3,0,7]', '.[] |= select(. >= 4)');
+   jq   
+--------
+ [5, 7]
+(1 row)
+
+select jq('[1,5,3,0,7]', '.[] |= select(. == 2)');
+ jq 
+----
+ []
+(1 row)
+
+/* --- if/else conditionals --- */
+select jq('2', '.<5');
+  jq  
+------
+ true
+(1 row)
+
+select jq('{"prod":  "life", "price":  10}', 'if .price > 0 then "it is expensive" else {"oh": "well"} end');
+        jq         
+-------------------
+ "it is expensive"
+(1 row)
+
+select jq('{"prod":  "life", "price":  10}', 'if .price > 100 then "it is expensive" else {"oh": "well"} end');
+       jq       
+----------------
+ {"oh": "well"}
+(1 row)
+
+select jq('2', 'if . == 0 then "zero" elif . == 1 then "one" else "many" end');
+   jq   
+--------
+ "many"
+(1 row)
+
+select jq('3', 'if . == 0 then "zero" elif . == 1 then "one" else {"big": "object"} end');
+        jq         
+-------------------
+ {"big": "object"}
+(1 row)
+
+/* --- builtin functions --- */
+select jq('1', '[repeat(.*2, error)?]');
+ jq  
+-----
+ [2]
+(1 row)
+
+select jq('4', '[.,1]|until(.[0] < 1; [.[0] - 1, .[1] * .[0]])|.[1]');
+ jq 
+----
+ 24
+(1 row)
+
+select jq('[[4, 1, 7], [8, 5, 2], [3, 6, 9]]', 'walk(if type == "array" then sort else . end)');
+                jq                 
+-----------------------------------
+ [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+(1 row)
+
+select jq('[ { "_a": { "__b": 2 } } ]', 'walk( if type == "object" then with_entries( .key |= sub( "^_+"; "") ) else . end )');
+        jq         
+-------------------
+ [{"a": {"b": 2}}]
+(1 row)
+
+select jq('[0,1]', 'bsearch(0)');
+ jq 
+----
+ 0
+(1 row)
+
+select jq('[1,2,3]', 'bsearch(0)');
+ jq 
+----
+ -1
+(1 row)
+
+select jq('[1,2,3]', 'bsearch(0)');
+ jq 
+----
+ -1
+(1 row)
+
+select jq('[1,2,3]', 'bsearch(4) as $ix | if $ix < 0 then .[-(1+$ix)] = 4 else . end');
+      jq      
+--------------
+ [1, 2, 3, 4]
+(1 row)
+
+/* --- convert to/from JSON --- */
+select jq('[1, "foo", ["foo"]]', '[.[]|tostring]');
+            jq             
+---------------------------
+ ["1", "foo", "[\"foo\"]"]
+(1 row)
+
+select jq('[1, "foo", ["foo"]]', '[.[]|tojson]');
+              jq               
+-------------------------------
+ ["1", "\"foo\"", "[\"foo\"]"]
+(1 row)
+
+select jq('[1,"foo",["foo"]]', '[.[]|tojson|fromjson]');
+         jq          
+---------------------
+ [1, "foo", ["foo"]]
+(1 row)
+
+/* --- chain with jsonpath --- */
+select jq('[
+  {
+    "cust": "baz",
+    "trans": {
+      "balance": 100,
+      "date": "2023-08-01"
+    },
+    "active": true,
+    "geo": {
+      "branch": "paloukia"
+    }
+  }]',
+    '(.[] | select(.active == true))') #- '{trans}' @> '{"cust": "baz"}';
+ ?column? 
+----------
+ t
+(1 row)
+
+/* --- ---argjson --- */
+-- test numeric argument
+select jq('{
+  "success": true,
+  "message": "jobStatus",
+  "jobStatus": [
+    {
+      "ID": 9,
+      "status": "Successful"
+    },
+    {
+      "ID": 2,
+      "status": "Successful"
+    },
+    {
+      "ID": 99,
+      "status": "Failed"
+    }
+  ]
+}'::jsonb, '.jobStatus[] | select(.ID == $job_id) | .status', '{"job_id": 2}');
+      jq      
+--------------
+ "Successful"
+(1 row)
+
+-- test string argument
+select jq('{
+  "success": true,
+  "message": "jobStatus",
+  "jobStatus": [
+    {
+      "ID": 9,
+      "status": "Successful"
+    },
+    {
+      "ID": 2,
+      "status": "Successful"
+    },
+    {
+      "ID": 99,
+      "status": "Failed"
+    }
+  ]
+}'::jsonb, '.jobStatus[] | select(.status == $status) | .', '{"status": "Failed"}');
+               jq               
+--------------------------------
+ {"ID": 99, "status": "Failed"}
+(1 row)
+
+-- test boolean argument
+select jq('{
+  "success": true,
+  "message": "jobStatus",
+  "jobs": [
+    {
+      "ID": 9,
+      "is_successfull": true
+    },
+    {
+      "ID": 100,
+      "is_successfull": false
+    }
+  ]
+}'::jsonb, '.jobs[] | select(.is_successfull == $is_success) | .', '{"is_success": true}');
+                jq                 
+-----------------------------------
+ {"ID": 9, "is_successfull": true}
+(1 row)
+
+-- test multiple arguments
+select jq('{
+  "runner": 1,
+  "message": "jobStatus",
+  "jobs": [
+    {
+      "id": 9,
+      "is_successfull": true
+    },
+    {
+      "id": 100,
+      "is_successfull": false,
+      "metdata": {
+        "environ": "prod"
+      }
+    }
+  ]
+}'::jsonb, '.jobs[] | select(.is_successfull == $is_success and .id == 100) | .', '{"is_success": false, "id": 100}');
+                                  jq                                  
+----------------------------------------------------------------------
+ {"id": 100, "metdata": {"environ": "prod"}, "is_successfull": false}
+(1 row)
+

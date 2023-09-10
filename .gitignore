@@ -1,0 +1,17 @@
+/dist/
+/log/
+/results/
+/tmp_check/
+regression.*
+*.o
+*.so
+*.bc
+*.dll
+*.dylib
+*.obj
+*.lib
+*.exp
+.deps/
+.idea/
+build/
+

@@ -1,0 +1,5 @@
+comment = 'jq in Postgres'
+default_version = '0.1.0'
+module_pathname = '$libdir/pgjq'
+relocatable = true
+comment = 'Use jq in Postgres'

@@ -1,0 +1,4 @@
+[submodule "jq"]
+	path = jq
+	url = https://github.com/Florents-Tselai/jq.git
+	branch = jq-api
