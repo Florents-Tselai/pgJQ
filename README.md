@@ -186,7 +186,7 @@ or try reproducing the [`jq` manual](https://jqlang.github.io/jq/manual/) .
 ## Installation
 
 ```sh
-git clone --recurse-submodules https://github.com:Florents-Tselai/pgJQ.git
+git clone --recurse-submodules https://github.com/Florents-Tselai/pgJQ.git
 ```
 
 Start by building a slightly-patched version of `jq`.
