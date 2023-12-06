@@ -21,6 +21,8 @@ jobs:
             os: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - uses: ankane/setup-postgres@v1
         with:
           postgres-version: ${{ matrix.postgres }}
