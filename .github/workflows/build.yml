@@ -27,6 +27,10 @@ jobs:
         with:
           postgres-version: ${{ matrix.postgres }}
           dev-files: true
+      - run: |
+          git switch jq-api
+          autoreconf -i
+          ./configure --with-oniguruma=builtin --prefix=$(PWD)/build
       - run: make
         env:
           PG_CFLAGS: -Wall -Wextra -Werror -Wno-unused-parameter -Wno-sign-compare
