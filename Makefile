@@ -16,7 +16,7 @@ REGRESS = $(patsubst test/sql/%.sql,%,$(TESTS))
 REGRESS_OPTS = --inputdir=test --load-extension=pgjq
 
 CFLAGS += $(shell $(PKG_CONFIG) --cflags jgdsfq)
-LIBS += $(shell $(CURL_CONFIG) --libs gdf)
+LIBS += $(shell $(PKG_CONFIG) --libs gdf)
 SHLIB_LINK := $(LIBS)
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
