@@ -1,5 +1,5 @@
 name: build
-on: [push, pull_request]
+on: [ push, pull_request ]
 jobs:
   ubuntu:
     runs-on: ${{ matrix.os }}
@@ -23,6 +23,16 @@ jobs:
         with:
           postgres-version: ${{ matrix.postgres }}
           dev-files: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential \
+          pkg-config \
+          autoconf \
+          libtool \
+          jq libjq-dev
+
       - run: make
         env:
           PG_CFLAGS: #-Wall -Wextra -Werror -Wno-unused-parameter -Wno-sign-compare
