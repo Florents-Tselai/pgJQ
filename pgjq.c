@@ -456,34 +456,8 @@ jq(PG_FUNCTION_ARGS) {
     else
         jq_util_input_set_parser(input_state, jv_parser_new(parser_flags), (options & SLURP) ? 1 : 0);
 
-    /* Let jq program read from inputs */
-    jq_set_input_cb(jq, jq_util_input_next_input_cb, input_state);
-
-    jq_util_input_set_input_file(input_state, file_json);
-
-    while (jq_util_input_errors(input_state) == 0 &&
-           (jv_is_valid((value = jq_util_input_next_input(input_state))) || jv_invalid_has_msg(jv_copy(value)))) {
-        if (jv_is_valid(value)) {
-            ret = jq_process(jq, value, jq_flags, dumpopts, options, &obj);
-            if (ret <= 0 && ret != JQ_OK_NO_OUTPUT)
-                last_result = (ret != JQ_OK_NULL_KIND);
-            if (jq_halted(jq))
-                break;
-            continue;
-        }
-
-        /* Parse error */
-        jv msg = jv_invalid_get_msg(value);
-        if (!(options & SEQ)) {
-            ret = JQ_ERROR_UNKNOWN;
-            ereport(ERROR,
-                    (errmsg("pgjq: parse error: %s\n", jv_string_value(msg))));
-        }
-        // --seq -> errors are not fatal
-        ereport(WARNING,
-                (errmsg("jq: ignoring parse error: %s\n", jv_string_value(msg))));
-        jv_free(msg);
-    }
+    value = jv_parse(json_string);
+    ret = jq_process(jq, value, jq_flags, dumpopts, options, &obj);
 
     /* Start building the result */
     jbvOut = JvObject_to_JsonbValue(&obj, &jsonb_state, true);
