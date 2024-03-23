@@ -20,6 +20,10 @@ SELECT jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].bar'
 (1 row)
 ```
 
+![til](./pgjq-demo.gif)
+
+
+
 ## Usage
 
 ### Filters
@@ -177,26 +181,8 @@ or try reproducing the [`jq` manual](https://jqlang.github.io/jq/manual/) .
 ## Installation
 
 ```sh
-git clone --recurse-submodules https://github.com/Florents-Tselai/pgJQ.git
-```
-
-Start by building a slightly-patched version of `jq`.
-See here [why](#how-it-works).
-
-```sh
-cd pgjq
-cd jq
-git switch jq-api
-autoreconf -i
-./configure --with-oniguruma=builtin --prefix=$(PWD)/build
-make -j
-make install
-```
-
-Then build install the pgJQ extension
-
-```sh
-cd ..
+git clone https://github.com/Florents-Tselai/pgJQ.git
+cd pgJQ
 make install # set PG_CONFIG=/path/to/bin/pg_config if necessary.
 make installcheck
 ```
