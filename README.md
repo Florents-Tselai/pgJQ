@@ -20,18 +20,6 @@ SELECT jq('[{"bar": "baz", "balance": 7.77, "active":false}]'::jsonb, '.[0].bar'
 (1 row)
 ```
 
-## Table of Contents
-
-- [Usage](#usage)
-  - [Filters](#filters)
-  - [Complex Programs](#complex-programs)
-  - [Passing Arguments to `jqprog`](#passing-arguments)
-  - [`jsonb` `@@` `jqprog`](#jsonb--jqprog)
-  - [Working with Files](#working-with-files)
-- [Installation](#installation)
-- [How it Works](#how-it-works)
-- [Issues](#issues)
-
 ## Usage
 
 ### Filters
