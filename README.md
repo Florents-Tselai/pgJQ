@@ -223,24 +223,7 @@ CREATE EXTENSION pgjq
 
 pgJQ does not re-implement the `jq` lang in Postgres.
 It instead embeds the standard `jq` compiler and uses it to parse `jq` programs supplied in SQL queries.
-These programs are fed with `jsonb` objects as input.  
-
-`jq`, however, is stream-oriented, and its [C API](https://github.com/jqlang/jq/wiki/C-API:-jv) is tailored around the CLI version of `jq` as a tool.
-To make this work with Postgres, I had to trick the `jq` compiler into thinking it reads from a stream instead of a SQL text variable.
-Check [this commit](https://github.com/Florents-Tselai/jq/commit/43155c0c96f7daf9353ad990128b15eca1b6df0c)
-
-The [`fmemopen`](https://man7.org/linux/man-pages/man3/fmemopen.3.html) came in handy for this:
-
-```c
-FILE *file_json = fmemopen(json_string, strlen(json_string), "r");
-```
-
-Then, the final `jv` result (`jv` is the equivalent of `Datum` for `jq`) is passed to the below function
-that recursively parses it to build a `JsonbValue` which is the result we're interested in.
-
-```c
-JsonbValue *JvObject_to_JsonbValue(jv *obj, JsonbParseState **jsonb_state, bool is_elem)
-```
+These programs are fed with `jsonb` objects as input.
 
 ## Issues
 
