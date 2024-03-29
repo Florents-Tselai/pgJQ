@@ -3,6 +3,8 @@
 <a href="https://opensource.org/licenses/MIT license"><img src="https://img.shields.io/badge/MIT license-blue.svg"></a>
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Florents-Tselai/pgJQ">
 
+*Note*: If you like this idea check out: [liteJQ: jq extension for SQLite](https://github.com/Florents-Tselai/liteJQ)
+
 The **pgJQ**  extension embeds the standard jq compiler and brings the much loved [jq](https://github.com/jqlang/jq) lang to Postgres.
 
 It adds a `jqprog` data type to express `jq` programs 
