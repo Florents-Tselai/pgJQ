@@ -1,7 +1,8 @@
 # pgJQ: Use `jq` in Postgres
 
-<a href="https://opensource.org/licenses/MIT license"><img src="https://img.shields.io/badge/MIT license-blue.svg"></a>
+<a href="https://hub.docker.com/repository/docker/florents/pgjq"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/florents/pgjq"></a>
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Florents-Tselai/pgJQ">
+<a href="https://opensource.org/licenses/MIT license"><img src="https://img.shields.io/badge/MIT license-blue.svg"></a>
 
 *Note*: If you like this idea check out: [liteJQ: jq extension for SQLite](https://github.com/Florents-Tselai/liteJQ)
 
