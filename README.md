@@ -2,6 +2,8 @@
 
 <a href="https://hub.docker.com/repository/docker/florents/pgjq"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/florents/pgjq"></a>
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Florents-Tselai/pgJQ">
+<a href="https://www.linkedin.com/in/florentstselai/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white"></a>
+<a href="https://github.com/sponsors/Florents-Tselai/"><img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/Florents-Tselai/"></a>
 <a href="https://opensource.org/licenses/MIT license"><img src="https://img.shields.io/badge/MIT license-blue.svg"></a>
 
 *Note*: If you like this idea check out: [liteJQ: jq extension for SQLite](https://github.com/Florents-Tselai/liteJQ)
