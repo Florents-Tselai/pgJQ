@@ -24,7 +24,7 @@ jobs:
       - run: |
           sudo apt update
 
-      - run: sudo apt install -y jq
+      - run: sudo apt install -y jq jq-devel
 
       - run: sudo ldconfig
 
