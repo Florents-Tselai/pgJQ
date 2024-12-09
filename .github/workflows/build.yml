@@ -26,6 +26,8 @@ jobs:
 
       - run: sudo apt install -y jq
 
+      - run: sudo ldconfig
+
       - uses: ankane/setup-postgres@v1
         with:
           postgres-version: ${{ matrix.postgres }}
